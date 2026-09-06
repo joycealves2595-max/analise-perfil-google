@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protótipo — Análise de Perfil | Joyce Alves Ads</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,450;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z4DV9WPMMB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z4DV9WPMMB');
+</script>
+
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2436867553450751');
+fbq('track', 'PageView');
+</script>
+
+<style>
+  :root{
+    --bg:#0f0e0c;
+    --bg-panel:#17150f;
+    --bg-panel-2:#1d1a13;
+    --line: rgba(198,161,91,0.18);
+    --gold:#c6a15b;
+    --gold-bright:#e8c97a;
+    --cream:#f3eee6;
+    --muted:#a79c87;
+    --red:#c2695a;
+    --green:#7d9b7a;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg); color:var(--cream);
+    font-family:'Inter', sans-serif; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit;}
+  .wrap{max-width:640px; margin:0 auto; padding:0 24px;}
+  h1,h2,h3{font-family:'Fraunces', serif; font-weight:600; letter-spacing:-0.01em;}
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--gold);
+    display:flex; align-items:center; gap:10px; justify-content:center;
+  }
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:10px;
+    background:var(--gold); color:#17150f;
+    font-weight:600; font-size:15px;
+    padding:15px 30px; border:none; border-radius:9px;
+    cursor:pointer; text-decoration:none; width:100%;
+    transition:background 0.2s, transform 0.2s;
+    font-family:'Inter', sans-serif;
+  }
+  .btn:hover{background:var(--gold-bright); transform:translateY(-1px);}
+  .btn:disabled{opacity:0.5; cursor:not-allowed;}
+
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(15,14,12,0.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{display:flex; justify-content:space-between; align-items:center; padding:16px 24px;}
+  .logo{font-family:'Fraunces', serif; font-weight:600; font-size:17px;}
+  .logo span{color:var(--gold);}
+  .nav-tag{font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--muted); letter-spacing:0.05em;}
+  .proto-banner{
+    background:var(--bg-panel-2); border-bottom:1px solid var(--line);
+    text-align:center; padding:8px 16px; font-family:'JetBrains Mono', monospace;
+    font-size:11px; color:var(--gold); letter-spacing:0.04em;
+  }
+
+  .hero{padding:44px 0 24px; text-align:center;}
+  .hero h1{font-size:clamp(24px,6vw,32px); line-height:1.2; max-width:22ch; margin:14px auto 12px;}
+  .hero p.lede{color:var(--muted); font-size:15.5px; max-width:42ch; margin:0 auto;}
+
+  .section-pad{padding:24px 0 60px;}
+  .card{
+    width:100%; margin:0 auto;
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:18px;
+    padding:32px 24px; position:relative; overflow:hidden;
+  }
+  .card::before{
+    content:''; position:absolute; inset:0;
+    background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:28px 28px; opacity:0.25; pointer-events:none;
+  }
+  .screen{position:relative; z-index:1; display:none;}
+  .screen.active{display:block; animation:fadeIn 0.4s ease;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  .field-label{
+    font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:8px; display:block;
+  }
+  .field{
+    width:100%; padding:14px 16px; border-radius:10px; border:1px solid var(--line);
+    background:var(--bg); color:var(--cream); font-size:15px; font-family:'Inter', sans-serif;
+    margin-bottom:18px; outline:none;
+  }
+  .field:focus{border-color:var(--gold);}
+  .field::placeholder{color:var(--muted);}
+
+  .loader-wrap{text-align:center; padding:30px 0;}
+  .spinner{
+    width:52px; height:52px; margin:0 auto 22px;
+    border:3px solid var(--line); border-top-color:var(--gold);
+    border-radius:50%; animation:spin 0.9s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loader-msg{font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--muted);}
+
+  .biz-header{margin-bottom:22px;}
+  .biz-header h2{font-size:19px; margin-bottom:4px;}
+  .biz-header p{color:var(--muted); font-size:13.5px;}
+
+  .score-wrap{text-align:center; margin:4px 0 24px;}
+  .score-circle{width:130px; height:130px; margin:0 auto 12px; position:relative; display:flex; align-items:center; justify-content:center; flex-direction:column;}
+  .score-circle svg{position:absolute; inset:0; transform:rotate(-90deg);}
+  .score-circle .num{font-family:'Fraunces', serif; font-size:34px; font-weight:700; color:var(--gold-bright); position:relative; z-index:2;}
+  .score-circle .of{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--muted); position:relative; z-index:2;}
+  .score-label{font-family:'JetBrains Mono', monospace; font-size:11.5px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); text-align:center;}
+
+  .checklist{display:flex; flex-direction:column; gap:10px; margin:22px 0 26px;}
+  .check-item{
+    display:flex; align-items:flex-start; gap:12px;
+    border:1px solid var(--line); border-radius:12px; padding:14px 16px; background:var(--bg);
+  }
+  .check-icon{
+    flex-shrink:0; width:24px; height:24px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:700; margin-top:1px;
+  }
+  .check-icon.ok{background:rgba(125,155,122,0.18); color:var(--green);}
+  .check-icon.bad{background:rgba(194,105,90,0.18); color:var(--red);}
+  .check-body h4{font-size:14.5px; font-weight:600; margin-bottom:2px;}
+  .check-body p{font-size:13px; color:var(--muted); line-height:1.4;}
+
+  .result-msg{background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin:18px 0 26px; font-size:14.5px;}
+  .result-msg b{color:var(--gold-bright);}
+
+  .catalog-head{margin-bottom:14px;}
+  .catalog-head .eyebrow{justify-content:flex-start; margin-bottom:6px;}
+  .catalog-head p{color:var(--muted); font-size:13.5px;}
+  .cat-list{display:flex; flex-direction:column; gap:10px; margin-bottom:22px;}
+  .cat-item{
+    border:1px solid var(--line); border-radius:12px; padding:16px 18px; background:var(--bg);
+    position:relative;
+  }
+  .cat-item.rec{border-color:var(--gold); background:var(--bg-panel-2);}
+  .cat-badge{
+    display:inline-block; font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.05em;
+    text-transform:uppercase; color:#17150f; background:var(--gold-bright);
+    padding:3px 8px; border-radius:20px; margin-bottom:8px;
+  }
+  .cat-item-top{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:6px;}
+  .cat-item h4{font-family:'Fraunces', serif; font-size:16px; font-weight:600;}
+  .cat-item .price{font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--gold-bright); white-space:nowrap;}
+  .cat-item p{color:var(--muted); font-size:13px; line-height:1.5;}
+
+  .try-again{
+    display:block; text-align:center; margin-top:14px; font-size:13px; color:var(--muted);
+    text-decoration:underline; cursor:pointer; background:none; border:none; font-family:'Inter', sans-serif;
+  }
+
+  footer{border-top:1px solid var(--line); padding:24px 0; text-align:center;}
+  footer p{font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--muted);}
+
+  @media (max-width:400px){
+    .card{padding:26px 18px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="proto-banner">⚠ PROTÓTIPO — dados de exemplo, ainda sem conexão real com o Google</div>
+
+<nav>
+  <div class="wrap">
+    <div class="logo">Joyce Alves <span>Ads</span></div>
+    <div class="nav-tag">TIETÊ/SP</div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Análise automática</div>
+    <h1>Descubra o que está faltando no seu perfil do Google</h1>
+    <p class="lede">Cole o nome do seu negócio, a gente busca seu perfil e te mostra exatamente o que está travando você de aparecer.</p>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="card">
+
+      <!-- TELA 1: BUSCA -->
+      <div class="screen active" id="search-screen">
+        <label class="field-label" for="biz-name">Nome do seu negócio</label>
+        <input class="field" id="biz-name" type="text" placeholder="Ex: ARSTEEL Móveis de Aço" value="Padaria Exemplo">
+        <label class="field-label" for="biz-city">Cidade</label>
+        <input class="field" id="biz-city" type="text" placeholder="Ex: Tietê, SP" value="Tietê, SP">
+        <button class="btn" onclick="startAnalysis()">Analisar meu perfil →</button>
+        <label style="display:flex; align-items:center; gap:8px; margin-top:16px; font-size:12px; color:var(--muted); cursor:pointer;">
+          <input type="checkbox" id="simulate-notfound"> [protótipo] simular "perfil não encontrado"
+        </label>
+      </div>
+
+      <!-- TELA 2: CARREGANDO -->
+      <div class="screen" id="loading-screen">
+        <div class="loader-wrap">
+          <div class="spinner"></div>
+          <div class="loader-msg" id="loader-msg">Buscando seu perfil no Google...</div>
+        </div>
+      </div>
+
+      <!-- TELA 3: RESULTADO -->
+      <div class="screen" id="result-screen">
+        <div class="biz-header">
+          <h2 id="result-biz-name">Padaria Exemplo</h2>
+          <p id="result-biz-address">R. Exemplo, 123 - Centro, Tietê/SP</p>
+        </div>
+
+        <div class="score-wrap">
+          <div class="score-circle">
+            <svg width="130" height="130">
+              <circle cx="65" cy="65" r="57" stroke="var(--bg)" stroke-width="9" fill="none"/>
+              <circle id="score-ring" cx="65" cy="65" r="57" stroke="var(--gold)" stroke-width="9" fill="none" stroke-dasharray="358.1" stroke-dashoffset="358.1" stroke-linecap="round"/>
+            </svg>
+            <div class="num" id="score-num">0</div>
+            <div class="of">/ 100</div>
+          </div>
+          <div class="score-label">Nota do Perfil</div>
+        </div>
+
+        <div class="result-msg" id="result-msg"></div>
+
+        <div class="checklist" id="checklist"></div>
+
+        <div class="catalog-head">
+          <div class="eyebrow">Próximo passo</div>
+          <p>Baseado no que encontramos, isto é o que resolve primeiro:</p>
+        </div>
+        <div class="cat-list" id="cat-list"></div>
+
+        <a class="btn" id="wa-btn" href="#" target="_blank" rel="noopener">Falar no WhatsApp →</a>
+        <button class="try-again" onclick="reset()">← Analisar outro perfil</button>
+      </div>
+
+      <!-- TELA 4: PERFIL NÃO ENCONTRADO -->
+      <div class="screen" id="not-found-screen">
+        <div class="biz-header">
+          <h2 id="notfound-biz-name">Padaria Exemplo</h2>
+        </div>
+
+        <div class="score-wrap">
+          <div class="score-circle">
+            <svg width="130" height="130">
+              <circle cx="65" cy="65" r="57" stroke="var(--bg)" stroke-width="9" fill="none"/>
+              <circle cx="65" cy="65" r="57" stroke="var(--red)" stroke-width="9" fill="none" stroke-dasharray="358.1" stroke-dashoffset="358.1" stroke-linecap="round"/>
+            </svg>
+            <div class="num">0</div>
+            <div class="of">/ 100</div>
+          </div>
+          <div class="score-label">Nota do Perfil</div>
+        </div>
+
+        <div class="result-msg">
+          <b>Não encontramos nenhum perfil seu no Google.</b><br><br>
+          Isso significa que quando alguém procura pelo nome do seu negócio — ou por algo como "[seu produto] perto de mim" — você simplesmente não aparece. Nenhuma foto, nenhuma nota, nenhum contato.<br><br>
+          É mais comum do que parece: quase metade dos pequenos negócios no Brasil ainda não reivindicou o próprio perfil no Google. Mas cada dia sem isso é cliente que está achando o concorrente em vez de você.
+        </div>
+
+        <div class="checklist">
+          <div class="check-item">
+            <div class="check-icon bad">✕</div>
+            <div class="check-body">
+              <h4>Perfil não existe (ou não foi encontrado)</h4>
+              <p>Sem perfil, você não aparece no Google Maps nem na busca local — mesmo que seu negócio já exista há anos.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="catalog-head">
+          <div class="eyebrow">O que fazer agora</div>
+          <p>O primeiro passo é criar e configurar seu perfil do zero, do jeito certo:</p>
+        </div>
+        <div class="cat-list">
+          <div class="cat-item rec">
+            <div class="cat-badge">Recomendado pra você</div>
+            <div class="cat-item-top"><h4>Setup GBP avulso</h4><span class="price">R$300</span></div>
+            <p>Configuração completa do seu Perfil da Empresa no Google, do zero, pronto pra aparecer nas buscas.</p>
+          </div>
+        </div>
+
+        <a class="btn" id="wa-btn-notfound" href="#" target="_blank" rel="noopener">Falar no WhatsApp →</a>
+        <button class="try-again" onclick="reset()">← Analisar outro perfil</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer><p>JOYCE ALVES ADS · GOOGLE MEU NEGÓCIO + META ADS · TIETÊ/SP</p></footer>
+
+<script>
+  const WA_NUMBER = "5515996342023";
+
+  // ============================================================
+  // DADOS DE EXEMPLO (fictícios) — na versão real, isso vem da
+  // Google Places API a partir do nome + cidade que a pessoa digitar.
+  // ============================================================
+  const MOCK_RESULT = {
+    name: "Padaria Exemplo",
+    address: "R. Exemplo, 123 - Centro, Tietê/SP",
+    checks: [
+      { ok: true,  title: "Categoria",        detail: "Categoria principal correta: \"Padaria\"." },
+      { ok: true,  title: "Telefone",         detail: "Telefone com DDD cadastrado e visível." },
+      { ok: false, title: "Endereço",         detail: "Endereço incompleto — falta o CEP." },
+      { ok: false, title: "Horário",          detail: "Horário de funcionamento não preenchido." },
+      { ok: false, title: "Fotos",            detail: "Apenas 2 fotos. O ideal é ter 10 ou mais." },
+      { ok: true,  title: "Site",             detail: "Link do site cadastrado e funcionando." },
+      { ok: true,  title: "Nota média",       detail: "4.6 estrelas — acima da média." },
+      { ok: false, title: "Avaliações recentes", detail: "Última avaliação recebida há 4 meses." }
+    ]
+  };
+
+  const catalog = {
+    diagnostico:   { name: "Diagnóstico completo",     price: "R$100",     desc: "Descubro exatamente onde sua empresa está perdendo cliente, com plano de ação por escrito." },
+    setup:         { name: "Setup GBP avulso",         price: "R$300",     desc: "Configuração completa do seu Perfil da Empresa no Google, pronto pra aparecer nas buscas." },
+    setup_treino:  { name: "Setup + Treinamento",      price: "R$450",     desc: "Configuração completa e te ensino a manter o perfil atualizado sozinho." },
+    gestao_gbp:    { name: "Gestão GBP mensal",        price: "R$600/mês", desc: "Cuido do seu perfil no Google todo mês: postagens, avaliações, otimização contínua." },
+    gestao_full:   { name: "Gestão GBP + Meta Ads",    price: "R$700/mês", desc: "Google e Instagram/Facebook trabalhando juntos pra gerar mais contato de verdade." }
+  };
+
+  function trackEvent(name, params){
+    if(typeof gtag === 'function'){ gtag('event', name, params || {}); }
+  }
+
+  function goTo(id){
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function startAnalysis(){
+    const name = document.getElementById('biz-name').value || "seu negócio";
+    const simulateNotFound = document.getElementById('simulate-notfound').checked;
+
+    trackEvent('search_submitted');
+    if(typeof fbq === 'function'){
+      fbq('trackCustom', 'Busca_Iniciada');
+    }
+
+    goTo('loading-screen');
+
+    const messages = simulateNotFound
+      ? [`Buscando "${name}" no Google...`, "Verificando resultados na região..."]
+      : [`Buscando "${name}" no Google...`, "Verificando fotos e categoria...", "Checando avaliações e nota...", "Montando seu diagnóstico..."];
+    let i = 0;
+    document.getElementById('loader-msg').textContent = messages[0];
+    const interval = setInterval(() => {
+      i++;
+      if(i < messages.length){
+        document.getElementById('loader-msg').textContent = messages[i];
+      } else {
+        clearInterval(interval);
+        if(simulateNotFound){
+          showNotFound(name);
+        } else {
+          showResult();
+        }
+      }
+    }, 700);
+  }
+
+  function showNotFound(name){
+    goTo('not-found-screen');
+    document.getElementById('notfound-biz-name').textContent = name;
+
+    trackEvent('profile_not_found');
+    if(typeof fbq === 'function'){
+      fbq('trackCustom', 'Perfil_Nao_Encontrado');
+      fbq('track', 'Lead', { content_name: 'perfil_nao_encontrado', value: 0, currency: 'BRL' });
+    }
+
+    const waText = `Olá! Fiz a análise e vi que meu negócio não tem perfil no Google ainda. Quero criar do zero com o Setup GBP.`;
+    document.getElementById('wa-btn-notfound').href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(waText)}`;
+  }
+
+  function showResult(){
+    const data = MOCK_RESULT; // na versão real: resultado vindo da API
+    document.getElementById('result-biz-name').textContent = data.name;
+    document.getElementById('result-biz-address').textContent = data.address;
+
+    const okCount = data.checks.filter(c => c.ok).length;
+    const score = Math.round((okCount / data.checks.length) * 100);
+
+    trackEvent('profile_analyzed', { score: score });
+    if(typeof fbq === 'function'){
+      fbq('trackCustom', 'Perfil_Encontrado');
+      fbq('track', 'Lead', { content_name: 'perfil_encontrado', value: score, currency: 'BRL' });
+    }
+
+    goTo('result-screen');
+
+    let n = 0;
+    const scoreNum = document.getElementById('score-num');
+    const step = Math.max(1, Math.round(score/30));
+    const interval = setInterval(() => {
+      n += step;
+      if(n >= score){ n = score; clearInterval(interval); }
+      scoreNum.textContent = n;
+    }, 20);
+
+    const circumference = 358.1;
+    const offset = circumference - (score/100) * circumference;
+    const ring = document.getElementById('score-ring');
+    ring.style.stroke = score >= 70 ? 'var(--green)' : (score >= 40 ? 'var(--gold)' : 'var(--red)');
+    setTimeout(() => { ring.style.transition = 'stroke-dashoffset 1s ease'; ring.style.strokeDashoffset = offset; }, 100);
+
+    let msg;
+    if(score >= 80) msg = "Seu perfil está bem cuidado. <b>Pequenos ajustes</b> ainda podem aumentar seu alcance.";
+    else if(score >= 50) msg = "Seu perfil já tem base, mas <b>algumas lacunas importantes</b> estão te custando visibilidade.";
+    else msg = "Seu perfil está perdendo cliente todo dia. <b>Esses pontos precisam ser corrigidos com urgência.</b>";
+    document.getElementById('result-msg').innerHTML = msg;
+
+    const checklistEl = document.getElementById('checklist');
+    checklistEl.innerHTML = '';
+    data.checks.forEach(c => {
+      const div = document.createElement('div');
+      div.className = 'check-item';
+      div.innerHTML = `
+        <div class="check-icon ${c.ok ? 'ok' : 'bad'}">${c.ok ? '✓' : '✕'}</div>
+        <div class="check-body">
+          <h4>${c.title}</h4>
+          <p>${c.detail}</p>
+        </div>
+      `;
+      checklistEl.appendChild(div);
+    });
+
+    const recommendedKey = score < 50 ? 'setup' : 'gestao_gbp';
+    const order = ['diagnostico','setup','setup_treino','gestao_gbp','gestao_full'];
+    const list = document.getElementById('cat-list');
+    list.innerHTML = '';
+    order.forEach(key => {
+      const item = catalog[key];
+      const isRec = key === recommendedKey;
+      const div = document.createElement('div');
+      div.className = 'cat-item' + (isRec ? ' rec' : '');
+      div.innerHTML = `
+        ${isRec ? '<div class="cat-badge">Recomendado pra você</div>' : ''}
+        <div class="cat-item-top"><h4>${item.name}</h4><span class="price">${item.price}</span></div>
+        <p>${item.desc}</p>
+      `;
+      list.appendChild(div);
+    });
+
+    const failedItems = data.checks.filter(c => !c.ok).map(c => c.title).join(', ');
+    const waText = `Olá! Analisei meu perfil no Google e vi que preciso melhorar: ${failedItems}. Quero entender melhor o ${catalog[recommendedKey].name}.`;
+    document.getElementById('wa-btn').href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(waText)}`;
+  }
+
+  function reset(){
+    goTo('search-screen');
+  }
+
+  document.getElementById('wa-btn').addEventListener('click', function(){
+    trackEvent('whatsapp_click', { source: 'perfil_encontrado' });
+    if(typeof fbq === 'function'){
+      fbq('track', 'Contact');
+    }
+  });
+
+  document.getElementById('wa-btn-notfound').addEventListener('click', function(){
+    trackEvent('whatsapp_click', { source: 'perfil_nao_encontrado' });
+    if(typeof fbq === 'function'){
+      fbq('track', 'Contact');
+    }
+  });
+</script>
+
+</body>
+</html>
