@@ -219,9 +219,6 @@ fbq('track', 'PageView');
         <label class="field-label" for="biz-city">Cidade</label>
         <input class="field" id="biz-city" type="text" placeholder="Ex: Tietê, SP" value="Tietê, SP">
         <button class="btn" onclick="startAnalysis()">Analisar meu perfil →</button>
-        <label style="display:flex; align-items:center; gap:8px; margin-top:16px; font-size:12px; color:var(--muted); cursor:pointer;">
-          <input type="checkbox" id="simulate-notfound"> [protótipo] simular "perfil não encontrado"
-        </label>
       </div>
 
       <!-- TELA 2: CARREGANDO -->
@@ -324,25 +321,6 @@ fbq('track', 'PageView');
 <script>
   const WA_NUMBER = "5515996342023";
 
-  // ============================================================
-  // DADOS DE EXEMPLO (fictícios) — na versão real, isso vem da
-  // Google Places API a partir do nome + cidade que a pessoa digitar.
-  // ============================================================
-  const MOCK_RESULT = {
-    name: "Padaria Exemplo",
-    address: "R. Exemplo, 123 - Centro, Tietê/SP",
-    checks: [
-      { ok: true,  title: "Categoria",        detail: "Categoria principal correta: \"Padaria\"." },
-      { ok: true,  title: "Telefone",         detail: "Telefone com DDD cadastrado e visível." },
-      { ok: false, title: "Endereço",         detail: "Endereço incompleto — falta o CEP." },
-      { ok: false, title: "Horário",          detail: "Horário de funcionamento não preenchido." },
-      { ok: false, title: "Fotos",            detail: "Apenas 2 fotos. O ideal é ter 10 ou mais." },
-      { ok: true,  title: "Site",             detail: "Link do site cadastrado e funcionando." },
-      { ok: true,  title: "Nota média",       detail: "4.6 estrelas — acima da média." },
-      { ok: false, title: "Avaliações recentes", detail: "Última avaliação recebida há 4 meses." }
-    ]
-  };
-
   const catalog = {
     diagnostico:   { name: "Diagnóstico completo",     price: "R$100",     desc: "Descubro exatamente onde sua empresa está perdendo cliente, com plano de ação por escrito." },
     setup:         { name: "Setup GBP avulso",         price: "R$300",     desc: "Configuração completa do seu Perfil da Empresa no Google, pronto pra aparecer nas buscas." },
@@ -360,9 +338,9 @@ fbq('track', 'PageView');
     document.getElementById(id).classList.add('active');
   }
 
-  function startAnalysis(){
+  async function startAnalysis(){
     const name = document.getElementById('biz-name').value || "seu negócio";
-    const simulateNotFound = document.getElementById('simulate-notfound').checked;
+    const city = document.getElementById('biz-city').value || "";
 
     trackEvent('search_submitted');
     if(typeof fbq === 'function'){
@@ -371,24 +349,49 @@ fbq('track', 'PageView');
 
     goTo('loading-screen');
 
-    const messages = simulateNotFound
-      ? [`Buscando "${name}" no Google...`, "Verificando resultados na região..."]
-      : [`Buscando "${name}" no Google...`, "Verificando fotos e categoria...", "Checando avaliações e nota...", "Montando seu diagnóstico..."];
+    const messages = [
+      `Buscando "${name}" no Google...`,
+      "Verificando fotos e categoria...",
+      "Checando avaliações e nota...",
+      "Montando seu diagnóstico..."
+    ];
     let i = 0;
     document.getElementById('loader-msg').textContent = messages[0];
-    const interval = setInterval(() => {
-      i++;
-      if(i < messages.length){
-        document.getElementById('loader-msg').textContent = messages[i];
-      } else {
-        clearInterval(interval);
-        if(simulateNotFound){
-          showNotFound(name);
-        } else {
-          showResult();
-        }
+    const msgInterval = setInterval(() => {
+      i = (i + 1) % messages.length;
+      document.getElementById('loader-msg').textContent = messages[i];
+    }, 900);
+
+    try {
+      const params = new URLSearchParams({ name, city });
+      const res = await fetch(`/api/analyze-profile?${params.toString()}`);
+      const data = await res.json();
+      clearInterval(msgInterval);
+
+      if(!res.ok){
+        throw new Error(data.error || 'server_error');
       }
-    }, 700);
+
+      if(data.found){
+        showResult(data);
+      } else {
+        showNotFound(name);
+      }
+    } catch(err){
+      clearInterval(msgInterval);
+      showAnalysisError(name);
+    }
+  }
+
+  function showAnalysisError(name){
+    goTo('not-found-screen');
+    document.getElementById('notfound-biz-name').textContent = name;
+    const notFoundMsg = document.querySelector('#not-found-screen .result-msg');
+    if(notFoundMsg){
+      notFoundMsg.innerHTML = '<b>Tivemos um problema técnico ao buscar seu perfil.</b><br><br>Isso não é culpa sua — pode tentar novamente em alguns instantes, ou falar direto comigo pelo WhatsApp que eu analiso manualmente pra você.';
+    }
+    const waText = `Olá! Tentei fazer a análise automática do meu perfil e deu um erro técnico. Pode me ajudar?`;
+    document.getElementById('wa-btn-notfound').href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(waText)}`;
   }
 
   function showNotFound(name){
@@ -405,8 +408,7 @@ fbq('track', 'PageView');
     document.getElementById('wa-btn-notfound').href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(waText)}`;
   }
 
-  function showResult(){
-    const data = MOCK_RESULT; // na versão real: resultado vindo da API
+  function showResult(data){
     document.getElementById('result-biz-name').textContent = data.name;
     document.getElementById('result-biz-address').textContent = data.address;
 
