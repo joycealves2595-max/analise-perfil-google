@@ -168,8 +168,16 @@ fbq('track', 'PageView');
   }
   .cat-item-top{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:6px;}
   .cat-item h4{font-family:'Fraunces', serif; font-size:16px; font-weight:600;}
+  .cat-item .price-wrap{display:flex; align-items:baseline; gap:8px; white-space:nowrap;}
+  .cat-item .price-old{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--muted); text-decoration:line-through;}
   .cat-item .price{font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--gold-bright); white-space:nowrap;}
   .cat-item p{color:var(--muted); font-size:13px; line-height:1.5;}
+
+  .reward-banner{
+    display:flex; align-items:center; gap:10px; background:var(--bg-panel-2); border:1px solid var(--gold);
+    border-radius:12px; padding:12px 16px; margin-bottom:16px; font-size:13px; color:var(--cream);
+  }
+  .reward-banner .icon{font-size:18px; flex-shrink:0;}
 
   .try-again{
     display:block; text-align:center; margin-top:14px; font-size:13px; color:var(--muted);
@@ -249,6 +257,7 @@ fbq('track', 'PageView');
           <div class="eyebrow">Próximo passo</div>
           <p>Baseado no que encontramos, isto é o que resolve primeiro:</p>
         </div>
+        <div class="reward-banner"><span class="icon">🎁</span><span>Por ter completado sua análise, você já garante as condições abaixo.</span></div>
         <div class="cat-list" id="cat-list"></div>
 
         <a class="btn" id="wa-btn" href="#" target="_blank" rel="noopener">Falar no WhatsApp →</a>
@@ -293,10 +302,11 @@ fbq('track', 'PageView');
           <div class="eyebrow">O que fazer agora</div>
           <p>O primeiro passo é criar e configurar seu perfil do zero, do jeito certo:</p>
         </div>
+        <div class="reward-banner"><span class="icon">🎁</span><span>Por ter completado sua análise, você já garante a condição abaixo.</span></div>
         <div class="cat-list">
           <div class="cat-item rec">
             <div class="cat-badge">Recomendado pra você</div>
-            <div class="cat-item-top"><h4>Setup GBP avulso</h4><span class="price">R$300</span></div>
+            <div class="cat-item-top"><h4>Setup GBP avulso</h4><span class="price-wrap"><span class="price-old">R$400</span><span class="price">R$300</span></span></div>
             <p>Configuração completa do seu Perfil da Empresa no Google, do zero, pronto pra aparecer nas buscas.</p>
           </div>
         </div>
@@ -315,11 +325,11 @@ fbq('track', 'PageView');
   const WA_NUMBER = "5515996342023";
 
   const catalog = {
-    diagnostico:   { name: "Diagnóstico completo",     price: "R$100",     desc: "Descubro exatamente onde sua empresa está perdendo cliente, com plano de ação por escrito." },
-    setup:         { name: "Setup GBP avulso",         price: "R$300",     desc: "Configuração completa do seu Perfil da Empresa no Google, pronto pra aparecer nas buscas." },
-    setup_treino:  { name: "Setup + Treinamento",      price: "R$450",     desc: "Configuração completa e te ensino a manter o perfil atualizado sozinho." },
-    gestao_gbp:    { name: "Gestão GBP mensal",        price: "R$600/mês", desc: "Cuido do seu perfil no Google todo mês: postagens, avaliações, otimização contínua." },
-    gestao_full:   { name: "Gestão GBP + Meta Ads",    price: "R$700/mês", desc: "Google e Instagram/Facebook trabalhando juntos pra gerar mais contato de verdade." }
+    diagnostico:   { name: "Diagnóstico completo",     priceOld: "R$150",     price: "R$100",     desc: "Descubro exatamente onde sua empresa está perdendo cliente, com plano de ação por escrito." },
+    setup:         { name: "Setup GBP avulso",         priceOld: "R$400",     price: "R$300",     desc: "Configuração completa do seu Perfil da Empresa no Google, pronto pra aparecer nas buscas." },
+    setup_treino:  { name: "Setup + Treinamento",      priceOld: "R$600",     price: "R$450",     desc: "Configuração completa e te ensino a manter o perfil atualizado sozinho." },
+    gestao_gbp:    { name: "Gestão GBP mensal",        priceOld: "R$600/mês", price: "R$500/mês", desc: "Cuido do seu perfil no Google todo mês: postagens, avaliações, otimização contínua. Valor com compromisso de 6 meses." },
+    gestao_full:   { name: "Gestão GBP + Meta Ads",    priceOld: "R$700/mês", price: "R$600/mês", desc: "Google e Instagram/Facebook trabalhando juntos pra gerar mais contato de verdade. Valor com compromisso de 6 meses." }
   };
 
   function trackEvent(name, params){
@@ -463,7 +473,7 @@ fbq('track', 'PageView');
       div.className = 'cat-item' + (isRec ? ' rec' : '');
       div.innerHTML = `
         ${isRec ? '<div class="cat-badge">Recomendado pra você</div>' : ''}
-        <div class="cat-item-top"><h4>${item.name}</h4><span class="price">${item.price}</span></div>
+        <div class="cat-item-top"><h4>${item.name}</h4><span class="price-wrap"><span class="price-old">${item.priceOld}</span><span class="price">${item.price}</span></span></div>
         <p>${item.desc}</p>
       `;
       list.appendChild(div);
