@@ -70,7 +70,11 @@ fbq('track', 'PageView');
     font-family:'Inter', sans-serif;
   }
   .btn:hover{background:var(--gold-bright); transform:translateY(-1px);}
-  .btn:disabled{opacity:0.5; cursor:not-allowed;}
+  .btn:disabled{opacity:0.4; cursor:not-allowed; transform:none;}
+  .btn-ghost{
+    background:transparent; border:1px solid var(--line); color:var(--cream);
+  }
+  .btn-ghost:hover{background:var(--bg-panel-2); transform:none;}
 
   nav{
     position:sticky; top:0; z-index:50;
@@ -114,6 +118,15 @@ fbq('track', 'PageView');
   .field:focus{border-color:var(--gold);}
   .field::placeholder{color:var(--muted);}
 
+  .field-divider{
+    border:none; border-top:1px dashed var(--line); margin:4px 0 20px;
+  }
+  .field-divider-label{
+    font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--muted);
+    text-align:center; margin:-30px 0 20px; position:relative;
+  }
+  .field-divider-label span{background:var(--bg-panel); padding:0 10px;}
+
   .loader-wrap{text-align:center; padding:30px 0;}
   .spinner{
     width:52px; height:52px; margin:0 auto 22px;
@@ -152,32 +165,34 @@ fbq('track', 'PageView');
   .result-msg{background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin:18px 0 26px; font-size:14.5px;}
   .result-msg b{color:var(--gold-bright);}
 
-  .catalog-head{margin-bottom:14px;}
-  .catalog-head .eyebrow{justify-content:flex-start; margin-bottom:6px;}
-  .catalog-head p{color:var(--muted); font-size:13.5px;}
-  .cat-list{display:flex; flex-direction:column; gap:10px; margin-bottom:22px;}
-  .cat-item{
-    border:1px solid var(--line); border-radius:12px; padding:16px 18px; background:var(--bg);
-    position:relative;
-  }
-  .cat-item.rec{border-color:var(--gold); background:var(--bg-panel-2);}
-  .cat-badge{
-    display:inline-block; font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.05em;
-    text-transform:uppercase; color:#17150f; background:var(--gold-bright);
-    padding:3px 8px; border-radius:20px; margin-bottom:8px;
-  }
-  .cat-item-top{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:6px;}
-  .cat-item h4{font-family:'Fraunces', serif; font-size:16px; font-weight:600;}
-  .cat-item .price-wrap{display:flex; align-items:baseline; gap:8px; white-space:nowrap;}
-  .cat-item .price-old{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--muted); text-decoration:line-through;}
-  .cat-item .price{font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--gold-bright); white-space:nowrap;}
-  .cat-item p{color:var(--muted); font-size:13px; line-height:1.5;}
+  .section-title{margin:26px 0 14px;}
+  .section-title .eyebrow{justify-content:flex-start; margin-bottom:6px;}
+  .section-title p{color:var(--muted); font-size:13.5px;}
 
-  .reward-banner{
-    display:flex; align-items:center; gap:10px; background:var(--bg-panel-2); border:1px solid var(--gold);
-    border-radius:12px; padding:12px 16px; margin-bottom:16px; font-size:13px; color:var(--cream);
+  .self-report{display:flex; flex-direction:column; gap:10px; margin-bottom:22px;}
+  .self-report-item{
+    border:1px solid var(--line); border-radius:12px; padding:14px 16px; background:var(--bg);
   }
-  .reward-banner .icon{font-size:18px; flex-shrink:0;}
+  .self-report-item h4{font-size:14px; margin-bottom:10px; font-weight:600;}
+  .chip-row{display:flex; gap:8px; flex-wrap:wrap;}
+  .chip{
+    font-family:'Inter', sans-serif; font-size:13px; padding:8px 14px; border-radius:20px;
+    border:1px solid var(--line); background:var(--bg-panel-2); color:var(--muted); cursor:pointer;
+    transition:all 0.15s;
+  }
+  .chip:hover{border-color:var(--gold);}
+  .chip.selected{background:var(--gold); border-color:var(--gold); color:#17150f; font-weight:600;}
+
+  .qa-block{margin-bottom:26px;}
+  .qa-block h4{font-size:15px; margin-bottom:12px; font-weight:600;}
+  .qa-options{display:flex; flex-direction:column; gap:8px;}
+  .qa-option{
+    text-align:left; border:1px solid var(--line); border-radius:10px; padding:13px 16px;
+    background:var(--bg); color:var(--cream); font-family:'Inter', sans-serif; font-size:14px;
+    cursor:pointer; transition:all 0.15s;
+  }
+  .qa-option:hover{border-color:var(--gold);}
+  .qa-option.selected{border-color:var(--gold); background:var(--bg-panel-2); box-shadow:inset 0 0 0 1px var(--gold);}
 
   .try-again{
     display:block; text-align:center; margin-top:14px; font-size:13px; color:var(--muted);
@@ -205,7 +220,7 @@ fbq('track', 'PageView');
   <div class="wrap">
     <div class="eyebrow">Análise automática</div>
     <h1>Descubra o que está faltando no seu perfil do Google</h1>
-    <p class="lede">Cole o nome do seu negócio, a gente busca seu perfil e te mostra exatamente o que está travando você de aparecer.</p>
+    <p class="lede">Preenche os dados abaixo. A gente busca seu perfil de verdade e mostra exatamente o que está travando você de aparecer.</p>
   </div>
 </section>
 
@@ -213,12 +228,19 @@ fbq('track', 'PageView');
   <div class="wrap">
     <div class="card">
 
-      <!-- TELA 1: BUSCA -->
+      <!-- TELA 1: BUSCA (com captura de contato ANTES do diagnóstico) -->
       <div class="screen active" id="search-screen">
+        <label class="field-label" for="lead-name">Seu nome</label>
+        <input class="field" id="lead-name" type="text" placeholder="Ex: Adriano">
+        <label class="field-label" for="lead-whatsapp">Seu WhatsApp</label>
+        <input class="field" id="lead-whatsapp" type="tel" placeholder="Ex: (15) 99999-9999">
+
+        <hr class="field-divider">
+
         <label class="field-label" for="biz-name">Nome do seu negócio</label>
-        <input class="field" id="biz-name" type="text" placeholder="Ex: ARSTEEL Móveis de Aço" value="Padaria Exemplo">
+        <input class="field" id="biz-name" type="text" placeholder="Ex: ARSTEEL Móveis de Aço">
         <label class="field-label" for="biz-city">Cidade</label>
-        <input class="field" id="biz-city" type="text" placeholder="Ex: Tietê, SP" value="Tietê, SP">
+        <input class="field" id="biz-city" type="text" placeholder="Ex: Tietê, SP">
         <button class="btn" onclick="startAnalysis()">Analisar meu perfil →</button>
       </div>
 
@@ -230,11 +252,11 @@ fbq('track', 'PageView');
         </div>
       </div>
 
-      <!-- TELA 3: RESULTADO -->
+      <!-- TELA 3: RESULTADO (diagnóstico completo, sem preço) -->
       <div class="screen" id="result-screen">
         <div class="biz-header">
-          <h2 id="result-biz-name">Padaria Exemplo</h2>
-          <p id="result-biz-address">R. Exemplo, 123 - Centro, Tietê/SP</p>
+          <h2 id="result-biz-name">—</h2>
+          <p id="result-biz-address">—</p>
         </div>
 
         <div class="score-wrap">
@@ -251,23 +273,24 @@ fbq('track', 'PageView');
 
         <div class="result-msg" id="result-msg"></div>
 
+        <div class="section-title">
+          <div class="eyebrow">O que encontramos automaticamente</div>
+        </div>
         <div class="checklist" id="checklist"></div>
 
-        <div class="catalog-head">
-          <div class="eyebrow">Próximo passo</div>
-          <p>Baseado no que encontramos, isto é o que resolve primeiro:</p>
+        <div class="section-title">
+          <div class="eyebrow">Só você sabe responder isso</div>
+          <p>Esses pontos não aparecem na busca pública — só quem administra o perfil consegue ver.</p>
         </div>
-        <div class="reward-banner"><span class="icon">🎁</span><span>Por ter completado sua análise, você já garante as condições abaixo.</span></div>
-        <div class="cat-list" id="cat-list"></div>
+        <div class="self-report" id="self-report"></div>
 
-        <a class="btn" id="wa-btn" href="#" target="_blank" rel="noopener">Falar no WhatsApp →</a>
-        <button class="try-again" onclick="reset()">← Analisar outro perfil</button>
+        <button class="btn" onclick="goToQualify()">Continuar →</button>
       </div>
 
       <!-- TELA 4: PERFIL NÃO ENCONTRADO -->
       <div class="screen" id="not-found-screen">
         <div class="biz-header">
-          <h2 id="notfound-biz-name">Padaria Exemplo</h2>
+          <h2 id="notfound-biz-name">—</h2>
         </div>
 
         <div class="score-wrap">
@@ -282,7 +305,7 @@ fbq('track', 'PageView');
           <div class="score-label">Nota do Perfil</div>
         </div>
 
-        <div class="result-msg">
+        <div class="result-msg" id="notfound-msg">
           <b>Não encontramos nenhum perfil seu no Google.</b><br><br>
           Isso significa que quando alguém procura pelo nome do seu negócio — ou por algo como "[seu produto] perto de mim" — você simplesmente não aparece. Nenhuma foto, nenhuma nota, nenhum contato.<br><br>
           É mais comum do que parece: quase metade dos pequenos negócios no Brasil ainda não reivindicou o próprio perfil no Google. Mas cada dia sem isso é cliente que está achando o concorrente em vez de você.
@@ -298,20 +321,52 @@ fbq('track', 'PageView');
           </div>
         </div>
 
-        <div class="catalog-head">
-          <div class="eyebrow">O que fazer agora</div>
-          <p>O primeiro passo é criar e configurar seu perfil do zero, do jeito certo:</p>
+        <a class="btn" id="wa-btn-notfound" href="#" target="_blank" rel="noopener">Falar no WhatsApp →</a>
+        <button class="try-again" onclick="reset()">← Analisar outro perfil</button>
+      </div>
+
+      <!-- TELA 5: QUALIFICAÇÃO (3 perguntas, sem preço nenhum) -->
+      <div class="screen" id="qualify-screen">
+        <div class="section-title" style="margin-top:0;">
+          <div class="eyebrow">Últimas 3 perguntas</div>
+          <p>Isso ajuda a gente a te dar um retorno certeiro, sem enrolação.</p>
         </div>
-        <div class="reward-banner"><span class="icon">🎁</span><span>Por ter completado sua análise, você já garante a condição abaixo.</span></div>
-        <div class="cat-list">
-          <div class="cat-item rec">
-            <div class="cat-badge">Recomendado pra você</div>
-            <div class="cat-item-top"><h4>Setup GBP avulso</h4><span class="price-wrap"><span class="price-old">R$400</span><span class="price">R$299</span></span></div>
-            <p>Configuração completa do seu Perfil da Empresa no Google, do zero, pronto pra aparecer nas buscas.</p>
+
+        <div class="qa-block">
+          <h4>1. Como está a situação hoje?</h4>
+          <div class="qa-options" data-question="situacao">
+            <button class="qa-option" data-value="sozinho">Cuido do marketing sozinho(a), do meu jeito</button>
+            <button class="qa-option" data-value="contratou">Já contratei alguém, mas não deu o resultado esperado</button>
+            <button class="qa-option" data-value="nunca">Nunca fiz nada disso ainda</button>
           </div>
         </div>
 
-        <a class="btn" id="wa-btn-notfound" href="#" target="_blank" rel="noopener">Falar no WhatsApp →</a>
+        <div class="qa-block">
+          <h4>2. O que mais te incomoda agora?</h4>
+          <div class="qa-options" data-question="dor">
+            <button class="qa-option" data-value="nao_encontram">As pessoas não me encontram no Google</button>
+            <button class="qa-option" data-value="poucas_avaliacoes">Tenho poucas avaliações comparado ao concorrente</button>
+            <button class="qa-option" data-value="sem_tempo">Não tenho tempo pra cuidar disso</button>
+            <button class="qa-option" data-value="sem_retorno">Já gastei com marketing e não veio retorno</button>
+          </div>
+        </div>
+
+        <div class="qa-block">
+          <h4>3. Se continuar assim por mais 6 meses, o que isso custa pra você?</h4>
+          <div class="qa-options" data-question="custo">
+            <button class="qa-option" data-value="perde_cliente">Vou continuar perdendo cliente pro concorrente todo mês</button>
+            <button class="qa-option" data-value="desconfortavel">Seria só desconfortável, nada muito grave</button>
+            <button class="qa-option" data-value="nao_sei">Não sei dizer</button>
+          </div>
+        </div>
+
+        <button class="btn" id="qualify-submit" onclick="finishQualify()" disabled>Ver meu resultado →</button>
+      </div>
+
+      <!-- TELA 6: FINAL -->
+      <div class="screen" id="final-screen">
+        <div class="result-msg" id="final-msg"></div>
+        <a class="btn" id="wa-btn-final" href="#" target="_blank" rel="noopener">Falar no WhatsApp →</a>
         <button class="try-again" onclick="reset()">← Analisar outro perfil</button>
       </div>
 
@@ -324,12 +379,13 @@ fbq('track', 'PageView');
 <script>
   const WA_NUMBER = "5515996342023";
 
-  const catalog = {
-    diagnostico:   { name: "Diagnóstico completo",     priceOld: "R$150",     price: "R$99",      desc: "Descubro exatamente onde sua empresa está perdendo cliente, com plano de ação por escrito." },
-    setup:         { name: "Setup GBP avulso",         priceOld: "R$400",     price: "R$299",     desc: "Configuração completa do seu Perfil da Empresa no Google, pronto pra aparecer nas buscas." },
-    setup_treino:  { name: "Setup + Treinamento",      priceOld: "R$600",     price: "R$449",     desc: "Configuração completa e te ensino a manter o perfil atualizado sozinho." },
-    gestao_gbp:    { name: "Gestão GBP mensal",        priceOld: "R$600/mês", price: "R$497/mês", desc: "Cuido do seu perfil no Google todo mês: postagens, avaliações, otimização contínua. Valor com compromisso de 6 meses." },
-    gestao_full:   { name: "Gestão GBP + Meta Ads",    priceOld: "R$700/mês", price: "R$597/mês", desc: "Google e Instagram/Facebook trabalhando juntos pra gerar mais contato de verdade. Valor com compromisso de 6 meses." }
+  // Estado do lead ao longo do fluxo.
+  let leadData = {
+    leadName: '', leadWhatsapp: '',
+    bizName: '', bizCity: '',
+    found: false, score: null, failedChecks: [],
+    selfReport: { verificado: null, atualizado: null },
+    answers: { situacao: null, dor: null, custo: null }
   };
 
   function trackEvent(name, params){
@@ -341,14 +397,40 @@ fbq('track', 'PageView');
     document.getElementById(id).classList.add('active');
   }
 
+  // Envia o que já temos pro backend de captação. Não bloqueia o fluxo
+  // se o endpoint ainda não existir — só tenta, silenciosamente.
+  async function saveLead(stage){
+    try{
+      await fetch('/api/save-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stage, ...leadData })
+      });
+    }catch(err){ /* backend de captação ainda não configurado — não trava o fluxo */ }
+  }
+
   async function startAnalysis(){
-    const name = document.getElementById('biz-name').value || "seu negócio";
-    const city = document.getElementById('biz-city').value || "";
+    const leadName = document.getElementById('lead-name').value.trim();
+    const leadWhatsapp = document.getElementById('lead-whatsapp').value.trim();
+    const name = document.getElementById('biz-name').value.trim();
+    const city = document.getElementById('biz-city').value.trim();
+
+    if(!leadName || !leadWhatsapp || !name){
+      alert('Preenche seu nome, WhatsApp e o nome do negócio pra continuar.');
+      return;
+    }
+
+    leadData.leadName = leadName;
+    leadData.leadWhatsapp = leadWhatsapp;
+    leadData.bizName = name;
+    leadData.bizCity = city;
 
     trackEvent('search_submitted');
-    if(typeof fbq === 'function'){
-      fbq('trackCustom', 'Busca_Iniciada');
-    }
+    if(typeof fbq === 'function'){ fbq('trackCustom', 'Busca_Iniciada'); }
+
+    // Captura o lead JÁ AQUI, antes de saber o resultado — assim,
+    // mesmo quem não terminar o fluxo não se perde.
+    saveLead('capturado');
 
     goTo('loading-screen');
 
@@ -371,15 +453,9 @@ fbq('track', 'PageView');
       const data = await res.json();
       clearInterval(msgInterval);
 
-      if(!res.ok){
-        throw new Error(data.error || 'server_error');
-      }
+      if(!res.ok){ throw new Error(data.error || 'server_error'); }
 
-      if(data.found){
-        showResult(data);
-      } else {
-        showNotFound(name);
-      }
+      if(data.found){ showResult(data); } else { showNotFound(name); }
     } catch(err){
       clearInterval(msgInterval);
       showAnalysisError(name);
@@ -389,15 +465,14 @@ fbq('track', 'PageView');
   function showAnalysisError(name){
     goTo('not-found-screen');
     document.getElementById('notfound-biz-name').textContent = name;
-    const notFoundMsg = document.querySelector('#not-found-screen .result-msg');
-    if(notFoundMsg){
-      notFoundMsg.innerHTML = '<b>Tivemos um problema técnico ao buscar seu perfil.</b><br><br>Isso não é culpa sua — pode tentar novamente em alguns instantes, ou falar direto comigo pelo WhatsApp que eu analiso manualmente pra você.';
-    }
-    const waText = `Olá! Tentei fazer a análise automática do meu perfil e deu um erro técnico. Pode me ajudar?`;
+    document.getElementById('notfound-msg').innerHTML =
+      '<b>Tivemos um problema técnico ao buscar seu perfil.</b><br><br>Isso não é culpa sua — pode tentar novamente em alguns instantes, ou falar direto comigo pelo WhatsApp que eu analiso manualmente pra você.';
+    const waText = `Olá, meu nome é ${leadData.leadName}! Tentei fazer a análise automática do perfil de ${leadData.bizName} e deu um erro técnico. Pode me ajudar?`;
     document.getElementById('wa-btn-notfound').href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(waText)}`;
   }
 
   function showNotFound(name){
+    leadData.found = false;
     goTo('not-found-screen');
     document.getElementById('notfound-biz-name').textContent = name;
 
@@ -407,7 +482,9 @@ fbq('track', 'PageView');
       fbq('track', 'Lead', { content_name: 'perfil_nao_encontrado', value: 0, currency: 'BRL' });
     }
 
-    const waText = `Olá! Fiz a análise e vi que meu negócio não tem perfil no Google ainda. Quero criar do zero com o Setup GBP.`;
+    saveLead('perfil_nao_encontrado');
+
+    const waText = `Olá, meu nome é ${leadData.leadName}! Fiz a análise e vi que meu negócio (${name}) não tem perfil no Google ainda. Quero saber como resolver isso.`;
     document.getElementById('wa-btn-notfound').href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(waText)}`;
   }
 
@@ -417,6 +494,10 @@ fbq('track', 'PageView');
 
     const okCount = data.checks.filter(c => c.ok).length;
     const score = Math.round((okCount / data.checks.length) * 100);
+
+    leadData.found = true;
+    leadData.score = score;
+    leadData.failedChecks = data.checks.filter(c => !c.ok).map(c => c.title);
 
     trackEvent('profile_analyzed', { score: score });
     if(typeof fbq === 'function'){
@@ -462,45 +543,115 @@ fbq('track', 'PageView');
       checklistEl.appendChild(div);
     });
 
-    const recommendedKey = score < 50 ? 'setup' : 'gestao_gbp';
-    const order = ['diagnostico','setup','setup_treino','gestao_gbp','gestao_full'];
-    const list = document.getElementById('cat-list');
-    list.innerHTML = '';
-    order.forEach(key => {
-      const item = catalog[key];
-      const isRec = key === recommendedKey;
-      const div = document.createElement('div');
-      div.className = 'cat-item' + (isRec ? ' rec' : '');
-      div.innerHTML = `
-        ${isRec ? '<div class="cat-badge">Recomendado pra você</div>' : ''}
-        <div class="cat-item-top"><h4>${item.name}</h4><span class="price-wrap"><span class="price-old">${item.priceOld}</span><span class="price">${item.price}</span></span></div>
-        <p>${item.desc}</p>
-      `;
-      list.appendChild(div);
-    });
-
-    const failedItems = data.checks.filter(c => !c.ok).map(c => c.title).join(', ');
-    const waText = `Olá! Analisei meu perfil no Google e vi que preciso melhorar: ${failedItems}. Quero entender melhor o ${catalog[recommendedKey].name}.`;
-    document.getElementById('wa-btn').href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(waText)}`;
+    renderSelfReport();
   }
+
+  // Itens que NENHUMA API pública entrega — só quem administra o perfil sabe.
+  function renderSelfReport(){
+    const container = document.getElementById('self-report');
+    container.innerHTML = `
+      <div class="self-report-item">
+        <h4>Seu perfil está verificado no Google?</h4>
+        <div class="chip-row" data-field="verificado">
+          <button class="chip" data-value="sim">Sim</button>
+          <button class="chip" data-value="nao">Não</button>
+          <button class="chip" data-value="nao_sei">Não sei</button>
+        </div>
+      </div>
+      <div class="self-report-item">
+        <h4>Você posta ou atualiza esse perfil com que frequência?</h4>
+        <div class="chip-row" data-field="atualizado">
+          <button class="chip" data-value="semanal">Toda semana</button>
+          <button class="chip" data-value="raro">Raramente</button>
+          <button class="chip" data-value="abandonado">Não mexo faz tempo</button>
+        </div>
+      </div>
+    `;
+    container.querySelectorAll('.chip-row').forEach(row => {
+      row.addEventListener('click', (e) => {
+        const btn = e.target.closest('.chip');
+        if(!btn) return;
+        row.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+        btn.classList.add('selected');
+        leadData.selfReport[row.dataset.field] = btn.dataset.value;
+      });
+    });
+  }
+
+  function goToQualify(){
+    goTo('qualify-screen');
+  }
+
+  function checkQualifyComplete(){
+    const done = leadData.answers.situacao && leadData.answers.dor && leadData.answers.custo;
+    document.getElementById('qualify-submit').disabled = !done;
+  }
+
+  document.querySelectorAll('#qualify-screen .qa-options').forEach(block => {
+    block.addEventListener('click', (e) => {
+      const btn = e.target.closest('.qa-option');
+      if(!btn) return;
+      block.querySelectorAll('.qa-option').forEach(o => o.classList.remove('selected'));
+      btn.classList.add('selected');
+      leadData.answers[block.dataset.question] = btn.dataset.value;
+      checkQualifyComplete();
+    });
+  });
+
+  function finishQualify(){
+    trackEvent('qualify_completed', { custo: leadData.answers.custo });
+
+    const isHot = leadData.answers.custo === 'perde_cliente';
+
+    if(isHot){
+      if(typeof fbq === 'function'){ fbq('track', 'Lead', { content_name: 'lead_quente', value: leadData.score || 0, currency: 'BRL' }); }
+    }
+
+    saveLead(isHot ? 'lead_quente' : 'lead_frio');
+
+    goTo('final-screen');
+
+    const finalMsg = document.getElementById('final-msg');
+    if(isHot){
+      finalMsg.innerHTML = `<b>${leadData.leadName}, pelo que você respondeu, isso está custando cliente todo mês.</b><br><br>Vale a pena resolver logo. Me chama no WhatsApp que eu já te explico o caminho mais rápido pro seu caso.`;
+    } else {
+      finalMsg.innerHTML = `<b>Obrigada por completar sua análise, ${leadData.leadName}.</b><br><br>Já tenho todo o seu diagnóstico aqui. Me chama no WhatsApp quando quiser entender melhor o que pode ser feito.`;
+    }
+
+    const failedList = leadData.failedChecks.join(', ') || 'nenhum ponto crítico automático';
+    const answerLabels = {
+      situacao: { sozinho: 'cuido sozinho(a)', contratou: 'já contratei alguém e não deu certo', nunca: 'nunca fiz nada disso' },
+      dor: { nao_encontram: 'não me encontram no Google', poucas_avaliacoes: 'poucas avaliações vs. concorrente', sem_tempo: 'falta de tempo', sem_retorno: 'já gastei e não veio retorno' },
+      custo: { perde_cliente: 'perco cliente todo mês', desconfortavel: 'seria só desconfortável', nao_sei: 'não sei dizer' }
+    };
+    const waText = `Olá! Meu nome é ${leadData.leadName}. Fiz a análise do perfil de ${leadData.bizName}${leadData.bizCity ? ' (' + leadData.bizCity + ')' : ''} e a nota foi ${leadData.score}/100. Pontos pendentes: ${failedList}. Sobre minha situação: ${answerLabels.situacao[leadData.answers.situacao] || '—'}. O que mais me incomoda: ${answerLabels.dor[leadData.answers.dor] || '—'}. Se continuar assim: ${answerLabels.custo[leadData.answers.custo] || '—'}.`;
+    document.getElementById('wa-btn-final').href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(waText)}`;
+  }
+
+  document.getElementById('wa-btn-final')?.addEventListener('click', function(){
+    trackEvent('whatsapp_click', { source: 'final' });
+    if(typeof fbq === 'function'){ fbq('track', 'Contact'); }
+  });
+  document.getElementById('wa-btn-notfound')?.addEventListener('click', function(){
+    trackEvent('whatsapp_click', { source: 'perfil_nao_encontrado' });
+    if(typeof fbq === 'function'){ fbq('track', 'Contact'); }
+  });
 
   function reset(){
+    leadData = {
+      leadName: '', leadWhatsapp: '', bizName: '', bizCity: '',
+      found: false, score: null, failedChecks: [],
+      selfReport: { verificado: null, atualizado: null },
+      answers: { situacao: null, dor: null, custo: null }
+    };
+    document.querySelectorAll('#qualify-screen .qa-option').forEach(o => o.classList.remove('selected'));
+    document.getElementById('qualify-submit').disabled = true;
+    document.getElementById('lead-name').value = '';
+    document.getElementById('lead-whatsapp').value = '';
+    document.getElementById('biz-name').value = '';
+    document.getElementById('biz-city').value = '';
     goTo('search-screen');
   }
-
-  document.getElementById('wa-btn').addEventListener('click', function(){
-    trackEvent('whatsapp_click', { source: 'perfil_encontrado' });
-    if(typeof fbq === 'function'){
-      fbq('track', 'Contact');
-    }
-  });
-
-  document.getElementById('wa-btn-notfound').addEventListener('click', function(){
-    trackEvent('whatsapp_click', { source: 'perfil_nao_encontrado' });
-    if(typeof fbq === 'function'){
-      fbq('track', 'Contact');
-    }
-  });
 </script>
 
 </body>
