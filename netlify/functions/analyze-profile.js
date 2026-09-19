@@ -57,11 +57,12 @@ export default async (req, context) => {
     const placeId = places[0].id;
 
     // 2) Place Details — dados básicos e de contato (nível mais barato).
+    // Adicionados: editorialSummary (descrição do perfil) e types (categorias secundárias).
     const detailsBasicRes = await fetch(`https://places.googleapis.com/v1/places/${placeId}`, {
       method: 'GET',
       headers: {
         'X-Goog-Api-Key': apiKey,
-        'X-Goog-FieldMask': 'id,displayName,formattedAddress,nationalPhoneNumber,websiteUri,regularOpeningHours,photos,primaryTypeDisplayName,businessStatus'
+        'X-Goog-FieldMask': 'id,displayName,formattedAddress,nationalPhoneNumber,websiteUri,regularOpeningHours,photos,primaryTypeDisplayName,businessStatus,editorialSummary,types'
       }
     });
     const basic = await detailsBasicRes.json();
@@ -79,6 +80,8 @@ export default async (req, context) => {
     });
     const ratingData = await detailsRatingRes.json();
 
+    const secondaryTypesCount = (basic.types || []).length;
+
     const checks = [
       {
         title: 'Categoria',
@@ -86,6 +89,13 @@ export default async (req, context) => {
         detail: basic.primaryTypeDisplayName
           ? `Categoria principal: "${basic.primaryTypeDisplayName.text}".`
           : 'Nenhuma categoria principal foi encontrada no perfil.'
+      },
+      {
+        title: 'Categorias secundárias',
+        ok: secondaryTypesCount >= 3,
+        detail: secondaryTypesCount > 0
+          ? `${secondaryTypesCount} categoria(s) associada(s) ao perfil. O ideal é ter 3 ou mais, cobrindo os diferentes serviços que você oferece.`
+          : 'Nenhuma categoria secundária encontrada.'
       },
       {
         title: 'Telefone',
@@ -117,6 +127,13 @@ export default async (req, context) => {
         title: 'Site',
         ok: !!basic.websiteUri,
         detail: basic.websiteUri ? 'Link do site cadastrado.' : 'Nenhum site cadastrado no perfil.'
+      },
+      {
+        title: 'Descrição do perfil',
+        ok: !!(basic.editorialSummary && basic.editorialSummary.text),
+        detail: (basic.editorialSummary && basic.editorialSummary.text)
+          ? 'Perfil possui descrição preenchida.'
+          : 'Nenhuma descrição encontrada — esse campo ajuda o Google a entender e recomendar seu negócio.'
       },
       {
         title: 'Nota média',
